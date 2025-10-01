@@ -5,12 +5,19 @@ from .http import get
 def list_users() -> List[Dict[str, Any]]:
 
     data = get("/api/rest/usuario")  
-    return data if isinstance(data, list) else data.get("items", [])
+    print(f"Dados recebidos da API: {data}")
+
+    return data.get("itens", [])
 
 
 def normalize_user(p: Dict[str, Any]) -> Dict[str, Any]:
     sup = p.get("superior") or {}
     emp = p.get("empresa") or {}
+
+    if not p.get("usuId") or not p.get("nome") or not p.get("login") or not p.get("email"):
+        print(f"Dados inválidos encontrados: {p}")
+        return {}
+
     return {
         "usu_id": p.get("usuId"),
         "nome": p.get("nome"),
