@@ -1,7 +1,7 @@
 # actions_users.py
 from typing import Dict, Any
 from mysql.connector import Error
-from app.db.db import get_conn  #Banco de Dados: psoffice
+from app.db.db import get_conn  
 from typing import Dict, Any, Iterable
 from mysql.connector import Error
 from app.db.db import get_conn
@@ -54,16 +54,16 @@ DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
 """
 
-def create_users_table() -> Dict[str, Any]:
+def create_users_table():
 
     conn = None
     cur = None
     try:
         conn = get_conn() 
         cur = conn.cursor()
-
         cur.execute("SELECT DATABASE()")
         (current_db,) = cur.fetchone()
+
         if not current_db:
             raise RuntimeError("Nenhum database selecionado na conexão.")
 
@@ -113,18 +113,21 @@ ON DUPLICATE KEY UPDATE
   updated_at = CURRENT_TIMESTAMP
 """
 
-def upsert_user(row: Dict[str, Any]) -> Dict[str, Any]:
+def upsert_user(row: Dict[str, Any]):
     conn = cur = None
+
     try:
-        conn = get_conn()  # Conecta ao banco
+        conn = get_conn() 
         cur = conn.cursor()
         cur.execute(UPSERT_SQL, row)
         conn.commit()
         print(f"Dados inseridos/atualizados para {row['usu_id']} - {row['nome']}")
         return {"ok": True}
+    
     except Error as e:
         print(f"Erro ao inserir/atualizar usuário {row['usu_id']}: {e}")
         return {"ok": False, "error": str(e)}
+    
     finally:
         if cur: cur.close()
         if conn and conn.is_connected(): conn.close() 
@@ -132,6 +135,7 @@ def upsert_user(row: Dict[str, Any]) -> Dict[str, Any]:
 
 def upsert_many(rows: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
     conn = cur = None
+
     try:
         conn = get_conn()
         cur = conn.cursor()
@@ -139,20 +143,22 @@ def upsert_many(rows: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
         # Loga os dados que estão sendo enviados para o banco
         print(f"Dados que serão inseridos/atualizados: {rows}")
 
-        cur.executemany(UPSERT_SQL, list(rows))  # Executa o UPSERT
+        cur.executemany(UPSERT_SQL, list(rows))
         conn.commit()
-
-        # Verifica quantos registros foram afetados
         print(f"Inserção/atualização de {cur.rowcount} usuários.")
+
         return {"ok": True, "count": cur.rowcount}
+    
     except Error as e:
         print(f"Erro ao inserir/atualizar em lote: {e}")
         return {"ok": False, "error": str(e)}
+    
     finally:
         try:
             if cur: cur.close()
         except Exception:
             pass
+
         try:
             if conn and conn.is_connected(): conn.close()
         except Exception:
@@ -160,6 +166,7 @@ def upsert_many(rows: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
 
 if __name__ == "__main__":
     res = create_users_table()
+    
     if res.get("ok"):
         print("Criado:", res["message"])
     else:

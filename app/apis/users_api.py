@@ -3,7 +3,6 @@ from typing import Dict, Any, List
 from .http import get
 
 def list_users(index: int = 0):
-
     data = get(f"/api/rest/usuario?index={index}")  
     print(f"Dados recebidos da API: {data}")
 
@@ -38,6 +37,7 @@ def normalize_user(p: Dict[str, Any]):
     print(f"Dados normalizados: {normalized}")  # Log para verificar a saída da normalização
 
     return normalized
+
 
 def _clean_phone(phone: str | None):
     if not phone: 

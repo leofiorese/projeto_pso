@@ -5,7 +5,9 @@ from mysql.connector import Error
 from dotenv import load_dotenv
 
 def _load_config():
+
     load_dotenv()
+
     return {
         "host": os.getenv("MYSQL_HOST", "localhost"),
         "port": int(os.getenv("MYSQL_PORT", "3306")),
@@ -17,6 +19,7 @@ def _load_config():
 
 def get_conn():
     cfg = _load_config()
+
     return mc.connect(**cfg)
 
 def main():
@@ -27,12 +30,14 @@ def main():
         conn.ping(reconnect=False, attempts=1, delay=0)
         db = cfg["database"] or "(sem database selecionado)"
         print(f"Conexão bem-sucedida em {cfg['host']}:{cfg['port']} / DB Conectado: {db}")
+
         conn.close()
         sys.exit(0)
 
     except Error as e:
         print("Falha na conexão com o MySQL.")
         print(f"Detalhes: {e}")
+        
         sys.exit(1)
 
 if __name__ == "__main__":
