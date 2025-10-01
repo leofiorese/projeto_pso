@@ -9,7 +9,6 @@ from app.db.db import get_conn
 
 CREATE_TABLE_SQL = """
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 
   -- do payload
 
@@ -38,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`usu_id`),
 
   -- Restrições/índices úteis
 

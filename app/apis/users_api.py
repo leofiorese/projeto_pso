@@ -2,15 +2,15 @@
 from typing import Dict, Any, List
 from .http import get
 
-def list_users() -> List[Dict[str, Any]]:
+def list_users(index: int = 0):
 
-    data = get("/api/rest/usuario")  
+    data = get(f"/api/rest/usuario?index={index}")  
     print(f"Dados recebidos da API: {data}")
 
     return data.get("info", {}).get("itens", [])
 
 
-def normalize_user(p: Dict[str, Any]) -> Dict[str, Any]:
+def normalize_user(p: Dict[str, Any]):
     print(f"Normalizando os dados do usuário: {p}")  # Log para verificar a entrada dos dados
     
     sup = p.get("superior") or {}
@@ -39,7 +39,7 @@ def normalize_user(p: Dict[str, Any]) -> Dict[str, Any]:
 
     return normalized
 
-def _clean_phone(phone: str | None) -> str | None:
+def _clean_phone(phone: str | None):
     if not phone: 
         return None
     return "".join(filter(str.isdigit, phone))
