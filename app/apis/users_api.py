@@ -7,10 +7,12 @@ def list_users() -> List[Dict[str, Any]]:
     data = get("/api/rest/usuario")  
     print(f"Dados recebidos da API: {data}")
 
-    return data.get("itens", [])
+    return data.get("info", {}).get("itens", [])
 
 
 def normalize_user(p: Dict[str, Any]) -> Dict[str, Any]:
+    print(f"Normalizando os dados do usuário: {p}")  # Log para verificar a entrada dos dados
+    
     sup = p.get("superior") or {}
     emp = p.get("empresa") or {}
 
@@ -18,7 +20,7 @@ def normalize_user(p: Dict[str, Any]) -> Dict[str, Any]:
         print(f"Dados inválidos encontrados: {p}")
         return {}
 
-    return {
+    normalized = {
         "usu_id": p.get("usuId"),
         "nome": p.get("nome"),
         "sigla": p.get("sigla"),
@@ -32,6 +34,10 @@ def normalize_user(p: Dict[str, Any]) -> Dict[str, Any]:
         "empresa_nome": emp.get("nome"),
         "telefone": _clean_phone(p.get("telefone")),
     }
+    
+    print(f"Dados normalizados: {normalized}")  # Log para verificar a saída da normalização
+
+    return normalized
 
 def _clean_phone(phone: str | None) -> str | None:
     if not phone: 

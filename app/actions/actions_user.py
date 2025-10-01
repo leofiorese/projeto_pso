@@ -137,11 +137,10 @@ def upsert_many(rows: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
         conn = get_conn()
         cur = conn.cursor()
 
-        # Exibe os dados que estão sendo inseridos
-        for row in rows:
-            print(f"Inserindo/Atualizando: {row}")
+        # Loga os dados que estão sendo enviados para o banco
+        print(f"Dados que serão inseridos/atualizados: {rows}")
 
-        cur.executemany(UPSERT_SQL, list(rows))
+        cur.executemany(UPSERT_SQL, list(rows))  # Executa o UPSERT
         conn.commit()
 
         # Verifica quantos registros foram afetados
@@ -151,8 +150,14 @@ def upsert_many(rows: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
         print(f"Erro ao inserir/atualizar em lote: {e}")
         return {"ok": False, "error": str(e)}
     finally:
-        if cur: cur.close()
-        if conn and conn.is_connected(): conn.close()
+        try:
+            if cur: cur.close()
+        except Exception:
+            pass
+        try:
+            if conn and conn.is_connected(): conn.close()
+        except Exception:
+            pass
 
 if __name__ == "__main__":
     res = create_users_table()

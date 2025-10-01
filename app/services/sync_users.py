@@ -4,11 +4,13 @@ from app.actions.actions_user import upsert_many, upsert_user
 
 def sync_all_users() -> dict:
     payloads = list_users()  # Pega todos os usuários
+    print(f"Usuários recebidos: {payloads}")  # Log para verificar se a lista de usuários foi recebida corretamente
+    
     rows = [normalize_user(p) for p in payloads]
 
-    # Verifica o formato dos dados
+    # Log para verificar os dados normalizados
     for row in rows:
-        print(f"Normalizando: {row}")
+        print(f"Normalizando: {row}")  # Exibe os dados normalizados para cada usuário
 
     return upsert_many(rows)  # Envia para o banco
 
