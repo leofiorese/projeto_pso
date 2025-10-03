@@ -1,16 +1,11 @@
 # actions_users.py
-from typing import Dict, Any
-from mysql.connector import Error
-from app.db.db import get_conn  
 from typing import Dict, Any, Iterable
 from mysql.connector import Error
-from app.db.db import get_conn
+from app.db.db import get_conn  
 
 
 CREATE_TABLE_SQL = """
 CREATE TABLE IF NOT EXISTS `users` (
-
-  -- do payload
 
   `usu_id` INT UNSIGNED NOT NULL,               
   `nome` VARCHAR(150) NOT NULL,                  
@@ -133,7 +128,7 @@ def upsert_user(row: Dict[str, Any]):
         if conn and conn.is_connected(): conn.close() 
 
 
-def upsert_many(rows: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
+def upsert_many(rows: Iterable[Dict[str, Any]]):
     conn = cur = None
 
     try:
